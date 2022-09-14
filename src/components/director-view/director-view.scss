@@ -1,0 +1,19 @@
+.dirHeader{
+    flex-direction: row;
+}
+.dirBio{
+    font-size: 1rem;
+}
+
+.accordion-button{
+border: none;
+width: 100%;
+background: none;
+}
+.accordion-button select{
+border: none;
+background: blue;
+}
+.show{
+    padding: 2%;
+}

@@ -1,0 +1,16 @@
+.row-list{
+   color:black;
+  
+}
+.btn-group>.btn-group:not(:first-child)>.btn, .btn-group>.btn:not(:first-child){
+   display: none
+}
+
+
+input[type=checkbox] {
+   box-sizing: border-box;
+   height: 4vh;
+}
+.togglebar{
+   width: 87%;
+}
