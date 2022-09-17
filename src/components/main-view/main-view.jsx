@@ -32,6 +32,7 @@ class MainView extends React.Component {
       selectedMovie: null,
       userData: [],
       favorites: [],
+      user: null,
     };
   }
 
@@ -397,7 +398,11 @@ class MainView extends React.Component {
 }
 
 let mapStateToProps = (state) => {
-  return { movies: state.movies };
+  return {
+    movies: state.movies,
+    directors: state.directors,
+    genres: state.genres,
+  };
 };
 
 export default connect(mapStateToProps, { setMovies })(MainView);
