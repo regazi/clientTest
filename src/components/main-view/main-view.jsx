@@ -184,7 +184,8 @@ class MainView extends React.Component {
   }
 
   render() {
-    const { userData, favorites, setNewUser, user } = this.state;
+    const { userData, setNewUser, user } = this.state;
+    const favorites = userData.favoriteMovies;
     let { movies, directors, genres } = this.props;
     return (
       <Router>
