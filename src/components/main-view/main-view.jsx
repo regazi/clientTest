@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { MovieCard } from "../movie-card/movie-card";
+//import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
 import { LoginView } from "../login-view/login-view";
 import { NavElement } from "../nav-element/nav-element";
@@ -18,18 +18,20 @@ import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 
-export default class MainView extends React.Component {
+//redux
+import { connect } from "react-redux";
+import { setMovies, setGenres, setDirectors } from "../../actions/actions";
+import MoviesList from "../movies-list/movies-list";
+//end redux
+
+class MainView extends React.Component {
   constructor() {
     super();
     //initialize state
     this.state = {
-      movies: [],
       selectedMovie: null,
-      user: null,
       userData: [],
-      favorites: null,
-      directors: [],
-      genres: [],
+      favorites: [],
     };
   }
 
@@ -53,7 +55,9 @@ export default class MainView extends React.Component {
       this.setState({
         user: myName,
       });
-      this.setUserData(newData);
+      this.setState({
+        userData: newData.data,
+      });
     }
   }
 
@@ -64,11 +68,6 @@ export default class MainView extends React.Component {
     });
   }
 
-  changeUserInfo(newUsername) {
-    this.setState({
-      user: newUsername,
-    });
-  }
   onLoggedOut() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -128,9 +127,7 @@ export default class MainView extends React.Component {
       })
       .then((response) => {
         // Assign the result to the state
-        this.setState({
-          directors: response.data,
-        });
+        this.props.setDirectors(response.data);
         console.log(response.data);
       })
       .catch(function (error) {
@@ -144,35 +141,39 @@ export default class MainView extends React.Component {
       })
       .then((response) => {
         // Assign the result to the state
-        this.setState({
-          genres: response.data,
-        });
+        this.props.setGenres(response.data);
       })
       .catch(function (error) {
         console.log(error);
       });
   }
 
-  getMovies(token, userFaves) {
+  getMovies(token, userData) {
     axios
       .get("https://fifilm.herokuapp.com/movies", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        if (userFaves && userFaves.data.favoriteMovies.length > 0) {
+        console.log(userData);
+        if (
+          userData.data.favoriteMovies &&
+          userData.data.favoriteMovies.length > 0
+        ) {
+          // THERE IS A PROBLEM HERE SOMEWHERE I THINK-------------------
           const re = response.data;
-          const favorite = userFaves.data.favoriteMovies.map((fave) =>
-            re.find((movie) => movie._id === fave)
+          const favorite = userData.data.favoriteMovies.map((favoriteMovie) =>
+            re.find((movie) => movie._id === favoriteMovie)
           );
+          this.props.setMovies(response.data);
           this.setState({
-            movies: response.data,
             favorites: favorite,
           });
+          //------------------------------------------------------
         } else {
           console.log("empty");
+          this.props.setMovies(response.data);
           this.setState({
-            movies: response.data,
-            favorites: userFaves,
+            favorites: [],
           });
         }
       })
@@ -182,16 +183,8 @@ export default class MainView extends React.Component {
   }
 
   render() {
-    const {
-      movies,
-      user,
-      userData,
-      favorites,
-      setNewUser,
-      directors,
-      genres,
-      changeUserInfo,
-    } = this.state;
+    const { userData, favorites, setNewUser, user } = this.state;
+    let { movies, directors, genres } = this.props;
     return (
       <Router>
         <NavElement user={user} onLoggedOut={() => this.onLoggedOut()} />
@@ -210,11 +203,7 @@ export default class MainView extends React.Component {
                   </Col>
                 );
               if (movies.length === 0) return <div className="main-view" />;
-              return movies.map((movie) => (
-                <Col md={3} key={movie._id}>
-                  <MovieCard movie={movie} userData={userData} />
-                </Col>
-              ));
+              return <MoviesList movies={movies} userData={userData} />;
             }}
           />
           <Route
@@ -406,3 +395,9 @@ export default class MainView extends React.Component {
     );
   }
 }
+
+let mapStateToProps = (state) => {
+  return { movies: state.movies };
+};
+
+export default connect(mapStateToProps, { setMovies })(MainView);

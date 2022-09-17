@@ -1,11 +1,8 @@
 import React from "react";
-import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Accordion from "react-bootstrap/Accordion";
 import { Link } from "react-router-dom";
-
-import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
 import { DirMovieCard } from "../director-view-movies/director-view-movies";
 import "./director-view.scss";
 

@@ -5,7 +5,6 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import { Card, CardGroup, Container } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import axios from "axios";
 
 export function EditProfileView(props) {
@@ -26,6 +25,8 @@ export function EditProfileView(props) {
       console.log(email.indexOf("@"));
       setEmailErr("Please Enter a Valid Email");
       isReq = false;
+    } else if (password.length < 5) {
+      setPasswordErr("Password Must Have Minimum of 5 Characters");
     }
 
     return isReq;

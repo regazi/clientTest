@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
-import { propTypes } from "react-bootstrap/esm/Image";
+//import { propTypes } from "react-bootstrap/esm/Image";
 
 export class MovieView extends React.Component {
   constructor() {

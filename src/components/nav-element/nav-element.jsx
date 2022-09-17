@@ -25,8 +25,8 @@ export function NavElement({ user, onLoggedOut }) {
         <Navbar.Brand>
           <Link to="/">FIF</Link>
         </Navbar.Brand>
-        <Nav className="align-self-end d-flex justify-content-center">
-          <Nav.Item className="m4">
+        <Nav className="align-self-end d-flex justify-content-around">
+          <Nav.Item>
             <Link to="/directors">Directors</Link>
           </Nav.Item>
           <Nav.Item>
