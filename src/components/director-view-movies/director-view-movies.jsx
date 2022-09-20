@@ -28,5 +28,11 @@ DirMovieCard.propTypes = {
       location: PropTypes.string.isRequired,
     }),
   }),
-  userData: PropTypes.array,
+  user: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+    password: PropTypes.string,
+    birthday: PropTypes.string,
+    favoriteMovies: PropTypes.array,
+  }),
 };

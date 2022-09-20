@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 
 export class SingleDirectorView extends React.Component {
   render() {
-    const { movies, director, userData, onBackClick } = this.props;
+    const { movies, director, user, onBackClick } = this.props;
     console.log(director);
     if (director)
       return (
@@ -20,7 +20,7 @@ export class SingleDirectorView extends React.Component {
             <Card.Body>
               <Card className="p-2 flex-row overflow-auto">
                 <DirMovieCard
-                  userData={userData}
+                  user={user}
                   key={director._id}
                   myMovies={movies.filter(
                     (movie) => movie.director === director._id
@@ -48,14 +48,14 @@ SingleDirectorView.propTypes = {
   director: PropTypes.shape({
     name: PropTypes.string.isRequired,
     about: PropTypes.string.isRequired,
-    userData: PropTypes.shape({
+    user: PropTypes.shape({
       _id: PropTypes.string.isRequired,
       username: PropTypes.string.isRequired,
       password: PropTypes.string,
       birthday: PropTypes.string,
-      favoriteMovies: PropTypes.array.isRequired,
-      movies: PropTypes.array.isRequired,
+      favoriteMovies: PropTypes.array,
     }).isRequired,
+    movies: PropTypes.array,
     onBackClick: PropTypes.func,
   }),
 };
