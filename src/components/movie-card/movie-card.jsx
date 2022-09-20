@@ -4,15 +4,11 @@ import "./movie-card.scss";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
-import { propTypes } from "react-bootstrap/esm/Image";
 
 export class MovieCard extends React.Component {
   render() {
-    const { movie, userData } = this.props;
-    if (
-      userData.favoriteMovies &&
-      userData.favoriteMovies.includes(movie._id)
-    ) {
+    const { movie, user } = this.props;
+    if (user.favoriteMovies && user.favoriteMovies.includes(movie)) {
       return (
         <Card className="p-1 bg-info">
           <Card.Img
@@ -61,12 +57,10 @@ MovieCard.propTypes = {
       location: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
-  userData:
-    PropTypes.array ||
-    PropTypes.shape({
-      _id: propTypes.string,
-      username: propTypes.string,
-      birthday: propTypes.string,
-      favoriteMovies: propTypes.array,
-    }),
+  user: PropTypes.shape({
+    _id: PropTypes.string,
+    username: PropTypes.string,
+    birthday: PropTypes.string,
+    favoriteMovies: PropTypes.array,
+  }),
 };

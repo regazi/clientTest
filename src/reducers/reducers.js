@@ -1,7 +1,7 @@
 // src/reducers/reducers.js
 import { combineReducers } from 'redux';
 
-import { SET_FILTER, SET_MOVIES, SET_GENRES, SET_DIRECTORS } from '../actions/actions';
+import { SET_FILTER, SET_MOVIES, SET_GENRES, SET_DIRECTORS, SET_USER } from '../actions/actions';
 
 function visibilityFilter(state = '', action) {
   switch (action.type) {
@@ -38,22 +38,24 @@ function genres(state = [], action) {
       return state;
   }
 }
-/*
+
 function user(state = '', action) {
   switch (action.type) {
     case SET_USER:
-      return action.value || localStorage.getItem('user');
+      return action.value;
+    //|| localStorage.getItem('user')
     default:
       return state;
   }
 }
-*/
+
 
 const moviesApp = combineReducers({
   visibilityFilter,
   movies,
   genres,
-  directors
+  directors,
+  user
 });
 
 

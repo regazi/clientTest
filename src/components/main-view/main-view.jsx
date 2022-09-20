@@ -20,23 +20,21 @@ import Button from "react-bootstrap/Button";
 
 //redux
 import { connect } from "react-redux";
-import { setMovies, setGenres, setDirectors } from "../../actions/actions";
+import {
+  setMovies,
+  setGenres,
+  setDirectors,
+  setUser,
+} from "../../actions/actions";
 import MoviesList from "../movies-list/movies-list";
 //end redux
-
 class MainView extends React.Component {
   constructor() {
     super();
     //initialize state
-    this.state = {
-      selectedMovie: null,
-      userData: [],
-      favorites: [],
-      user: null,
-    };
+    this.state = {};
   }
 
-  //here I fetch user data again and assign to userData. passing the data from the auth response would speed things up.
   async componentDidMount() {
     let accessToken = localStorage.getItem("token");
     if (accessToken !== null) {
@@ -49,75 +47,48 @@ class MainView extends React.Component {
           console.log(error);
         });
 
-      this.getMovies(accessToken, newData);
+      this.getMovies(accessToken, newData.data);
       this.getDirectors(accessToken);
       this.getGenres(accessToken);
-
-      this.setState({
-        user: myName,
-      });
-      this.setState({
-        userData: newData.data,
-      });
+      this.props.setUser(newData.data);
     }
-  }
-
-  setUserData(newData) {
-    console.log(newData);
-    this.setState({
-      userData: newData.data,
-    });
   }
 
   onLoggedOut() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    this.setState({
-      user: null,
-    });
-    // return <Redirect to="/" />;
+    this.props.setUser("");
+    //might throw an error
+    return <Redirect to="/" />;
   }
 
   // this function updates the users favorite movies component
   setNewUser(data, movies) {
-    console.log(data);
-    this.setState({
-      userData: data,
-      user: data.username,
-      favorites: data.favoriteMovies.map((fave) =>
+    this.props.setUser({
+      _id: data._id,
+      username: data.username,
+      birthday: data.birthday,
+      password: data.password,
+      email: data.email,
+      favoriteMovies: data.favoriteMovies.map((fave) =>
         movies.find((movie) => movie._id === fave)
       ),
-    });
-    console.log("it should have updated");
-  }
-  //this is probably not needed
-  setSelectedMovie(newSelectedMovie) {
-    this.setState({
-      selectedMovie: newSelectedMovie,
     });
   }
 
   onLoggedIn(authData) {
-    console.log(authData.user.username);
-    this.setState({
-      user: authData.user.username,
-      userData: authData.user,
-    });
+    this.props.setUser(authData.user);
     localStorage.setItem("token", authData.token);
     localStorage.setItem("user", authData.user.username);
-    this.getMovies(authData.token);
+    this.getMovies(authData.token, authData.user);
     this.getDirectors(authData.token);
     this.getGenres(authData.token);
   }
   onRegSignIn(authData) {
-    console.log(authData.user.username);
-    this.setState({
-      user: authData.user.username,
-      userData: authData.user,
-    });
+    this.props.setUser(authData.user);
     localStorage.setItem("token", authData.token);
     localStorage.setItem("user", authData.user.username);
-    this.getMovies(authData.token);
+    this.getMovies(authData.token, authData.user);
     this.getDirectors(authData.token);
     this.getGenres(authData.token);
   }
@@ -129,7 +100,6 @@ class MainView extends React.Component {
       .then((response) => {
         // Assign the result to the state
         this.props.setDirectors(response.data);
-        console.log(response.data);
       })
       .catch(function (error) {
         console.log(error);
@@ -149,33 +119,30 @@ class MainView extends React.Component {
       });
   }
 
-  getMovies(token, userData) {
+  getMovies(token, newData) {
     axios
       .get("https://fifilm.herokuapp.com/movies", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        console.log(userData);
-        if (
-          userData.data.favoriteMovies &&
-          userData.data.favoriteMovies.length > 0
-        ) {
-          // THERE IS A PROBLEM HERE SOMEWHERE I THINK-------------------
+        if (newData.favoriteMovies && newData.favoriteMovies.length > 0) {
           const re = response.data;
-          const favorite = userData.data.favoriteMovies.map((favoriteMovie) =>
+          const favorite = newData.favoriteMovies.map((favoriteMovie) =>
             re.find((movie) => movie._id === favoriteMovie)
           );
-          this.props.setMovies(response.data);
-          this.setState({
-            favorites: favorite,
+          this.props.setUser({
+            _id: newData._id,
+            username: newData.username,
+            birthday: newData.birthday,
+            password: newData.password,
+            email: newData.email,
+            favoriteMovies: favorite,
           });
+          this.props.setMovies(response.data);
           //------------------------------------------------------
         } else {
           console.log("empty");
           this.props.setMovies(response.data);
-          this.setState({
-            favorites: [],
-          });
         }
       })
       .catch(function (error) {
@@ -184,9 +151,7 @@ class MainView extends React.Component {
   }
 
   render() {
-    const { userData, setNewUser, user } = this.state;
-    const favorites = userData.favoriteMovies;
-    let { movies, directors, genres } = this.props;
+    const { movies, directors, genres, user } = this.props;
     return (
       <Router>
         <NavElement user={user} onLoggedOut={() => this.onLoggedOut()} />
@@ -198,14 +163,11 @@ class MainView extends React.Component {
               if (!user)
                 return (
                   <Col>
-                    <LoginView
-                      movies={movies}
-                      onLoggedIn={(user) => this.onLoggedIn(user)}
-                    />
+                    <LoginView onLoggedIn={(user) => this.onLoggedIn(user)} />
                   </Col>
                 );
               if (movies.length === 0) return <div className="main-view" />;
-              return <MoviesList movies={movies} userData={userData} />;
+              return <MoviesList movies={movies} user={user} />;
             }}
           />
           <Route
@@ -239,7 +201,7 @@ class MainView extends React.Component {
               return (
                 <Col md={8}>
                   <MovieView
-                    userData={userData}
+                    user={user}
                     movie={movies.find(
                       (movie) => movie._id === match.params.movieId
                     )}
@@ -274,7 +236,7 @@ class MainView extends React.Component {
                       <GenreView
                         movies={movies}
                         onBackClick={() => history.goBack()}
-                        userData={userData}
+                        user={user}
                         genres={genres}
                         director={directors}
                       />
@@ -312,7 +274,7 @@ class MainView extends React.Component {
                       (d) => d.name === match.params.name
                     )}
                     movies={movies}
-                    userData={userData}
+                    user={user}
                     onBackClick={() => history.goBack()}
                   />
                 </Col>
@@ -341,7 +303,7 @@ class MainView extends React.Component {
                         movies={movies}
                         onBackClick={() => history.goBack()}
                         directors={directors}
-                        userData={userData}
+                        user={user}
                       />
                     </Accordion>
                     <Button
@@ -358,17 +320,16 @@ class MainView extends React.Component {
           />
 
           <Route
-            path={`/users/${user}`}
+            path={`/users/${user.username}`}
             render={({ history }) => {
-              if (!user) return <Redirect to="/" />;
+              if (!user.username) return <Redirect to="/" />;
               if (movies.length === 0) return <div className="main-view" />;
               return (
                 <Col md={8}>
                   <ProfileView
                     user={user}
+                    setNewUser={(data) => this.setNewUser(data, movies)}
                     movies={movies}
-                    favorites={favorites}
-                    userData={userData}
                     onBackClick={() => history.goBack()}
                     onLoggedOut={() => this.onLoggedOut}
                   />
@@ -377,16 +338,17 @@ class MainView extends React.Component {
             }}
           />
           <Route
-            path={`/users/edit/${user}`}
+            path={`/users/edit/${user.username}`}
             render={({ history }) => {
-              if (!user) return <Redirect to="/" />;
+              if (!user.username) return <Redirect to="/" />;
               if (movies.length === 0) return <div className="main-view" />;
               return (
                 <Col md={10} lg={12}>
                   <EditProfileView
                     user={user}
-                    userData={userData}
                     onBackClick={() => history.goBack()}
+                    movies={movies}
+                    setNewUser={(data) => this.setNewUser(data, movies)}
                   />
                 </Col>
               );
@@ -403,7 +365,13 @@ let mapStateToProps = (state) => {
     movies: state.movies,
     directors: state.directors,
     genres: state.genres,
+    user: state.user,
   };
 };
 
-export default connect(mapStateToProps, { setMovies })(MainView);
+export default connect(mapStateToProps, {
+  setMovies,
+  setDirectors,
+  setGenres,
+  setUser,
+})(MainView);

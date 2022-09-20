@@ -2,10 +2,11 @@ import React from "react";
 import Card from "react-bootstrap/Card";
 import Accordion from "react-bootstrap/Accordion";
 import { DirMovieCard } from "../director-view-movies/director-view-movies";
+import PropTypes from "prop-types";
 
 export class GenreView extends React.Component {
   render() {
-    const { movies, userData, genres } = this.props;
+    const { movies, user, genres } = this.props;
     return genres.map((genre) => (
       <Accordion.Item key={genre._id} eventKey={genre._id}>
         <Card className="flex-column">
@@ -18,7 +19,7 @@ export class GenreView extends React.Component {
               <DirMovieCard
                 key={genre._id}
                 myMovies={movies.filter((movie) => movie.genre === genre._id)}
-                userData={userData}
+                user={user}
               />
             </Card>
           </Accordion.Body>
@@ -27,3 +28,15 @@ export class GenreView extends React.Component {
     ));
   }
 }
+
+GenreView.propTypes = {
+  user: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+    password: PropTypes.string,
+    birthday: PropTypes.string,
+    favoriteMovies: PropTypes.array,
+  }).isRequired,
+  movies: PropTypes.array.isRequired,
+  genres: PropTypes.array.isRequired,
+};

@@ -2,10 +2,8 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
-import Accordion from "react-bootstrap/Accordion";
-
-import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
 import { DirMovieCard } from "../director-view-movies/director-view-movies";
+import PropTypes from "prop-types";
 
 export class SingleDirectorView extends React.Component {
   render() {
@@ -45,3 +43,19 @@ export class SingleDirectorView extends React.Component {
     else return <div>not loaded</div>;
   }
 }
+
+SingleDirectorView.propTypes = {
+  director: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    about: PropTypes.string.isRequired,
+    userData: PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired,
+      password: PropTypes.string,
+      birthday: PropTypes.string,
+      favoriteMovies: PropTypes.array.isRequired,
+      movies: PropTypes.array.isRequired,
+    }).isRequired,
+    onBackClick: PropTypes.func,
+  }),
+};

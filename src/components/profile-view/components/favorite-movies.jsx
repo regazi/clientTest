@@ -7,6 +7,8 @@ import axios from "axios";
 
 export class FaveMovie extends React.Component {
   removeFavorites(movieId, userId, setNewUser) {
+    console.log(movieId);
+    console.log(userId);
     const token = localStorage.getItem("token");
     axios({
       method: "delete",
@@ -22,18 +24,19 @@ export class FaveMovie extends React.Component {
       });
   }
   render() {
-    const { myMovies, userData, setNewUser } = this.props;
+    const { myMovies, user, setNewUser } = this.props;
+    console.log(user);
     if (myMovies && myMovies.length > 0) {
       return myMovies.map((movie) => (
         <Col md={4} lg={4} sm={6} xs={8} key={movie._id} className="d-inline">
           <Button
             onClick={() =>
-              this.removeFavorites(movie._id, userData._id, setNewUser)
+              this.removeFavorites(movie._id, user._id, setNewUser)
             }
           >
             X
           </Button>
-          <MovieCard movie={movie} userData={userData} />
+          <MovieCard movie={movie} user={user} />
         </Col>
       ));
     } else {
@@ -48,14 +51,12 @@ export class FaveMovie extends React.Component {
 
 FaveMovie.propTypes = {
   myMovies: PropTypes.array,
-  userData:
-    PropTypes.array ||
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      username: PropTypes.string.isRequired,
-      password: PropTypes.string,
-      birthday: PropTypes.string.isRequired,
-      favoriteMovies: PropTypes.array.isRequired,
-    }),
+  user: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+    password: PropTypes.string,
+    birthday: PropTypes.string,
+    favoriteMovies: PropTypes.array,
+  }),
   setNewUser: PropTypes.func.isRequired,
 };

@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import {
   GoogleMap,
   InfoWindow,
   LoadScript,
   Marker,
 } from "@react-google-maps/api";
-let token = "AIzaSyABbaEQenuYHQwasoLxCBC-BzCqNkjTZCk";
+let token = process.env.REACT_APP_API_KEY;
 const MapComponent = ({ movie }) => {
-  // empty marker arrays
+  // initialize array of markers
   const initialMarkers = [
     {
       name: "",
@@ -26,22 +27,18 @@ const MapComponent = ({ movie }) => {
 
   const markerClicked = (marker, index) => {
     setActiveInfoWindow(index);
-    console.log(marker, index);
   };
 
   //will re-render the map with the selectedMovie prop
 
   useEffect(() => {
-    //set up an avg view at some point
     let itemsProcessed = 0;
+    //iterate through filming locations and pushes latLng to testMarkers
     movie.filmingLocations.forEach(function (locations) {
       locations.locations.forEach(function (location) {
         //    console.log("locations.locations loop")
         testMarkers.push({ location: location.location, name: location.name });
       });
-      console.log(markers.length);
-
-      //     console.log("fimlingLocations loop")
       itemsProcessed++;
     });
 
@@ -83,5 +80,15 @@ const MapComponent = ({ movie }) => {
     </LoadScript>
   );
 };
-
 export default MapComponent;
+
+MapComponent.propTypes = {
+  movie: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    imageURL: PropTypes.string.isRequired,
+    setting: PropTypes.shape({
+      location: PropTypes.string.isRequired,
+    }).isRequired,
+    filmingLocations: PropTypes.array.isRequired,
+  }).isRequired,
+};

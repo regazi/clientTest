@@ -22,10 +22,9 @@ export function EditProfileView(props) {
       setUsernameErr("Username Required");
       isReq = false;
     } else if (email.length > 0 && email.indexOf("@") === -1) {
-      console.log(email.indexOf("@"));
       setEmailErr("Please Enter a Valid Email");
       isReq = false;
-    } else if (password.length < 5) {
+    } else if (password.length < 5 && password.length > 1) {
       setPasswordErr("Password Must Have Minimum of 5 Characters");
     }
 
@@ -39,8 +38,7 @@ export function EditProfileView(props) {
     const isReq = validate();
     const token = localStorage.getItem("token");
     if (isReq) {
-      console.log(props.userData._id);
-      const id = props.userData._id;
+      const id = props.user._id;
       const data = {};
       if (username) {
         data["username"] = username;
@@ -59,15 +57,15 @@ export function EditProfileView(props) {
       })
         .then((response) => {
           let newUsername = response.data.username;
-          alert("Your profile has been updated");
           localStorage.setItem("user", newUsername);
-          // props.changeUserInfo(newUsername)
+          alert("Your profile has been updated");
+          props.setNewUser(response.data);
         })
         .catch((e) => {
           console.log(e);
         });
     } else if (isReq && password.length < 1) {
-      const id = props.userData._id;
+      const id = props.user._id;
       axios({
         method: "put",
         url: `https://fifilm.herokuapp.com/users/${id}`,
@@ -78,12 +76,10 @@ export function EditProfileView(props) {
         },
       })
         .then((response) => {
-          const data = response.data;
           let newUsername = response.data.username;
           alert("Your profile has been updated");
           localStorage.setItem("user", newUsername);
-          // props.changeUserInfo(newUsername);
-          console.log(data);
+          props.setNewUser(response.data);
         })
         .catch((e) => {
           console.log(e);
@@ -106,7 +102,7 @@ export function EditProfileView(props) {
                   <Form.Control
                     value={username}
                     type="text"
-                    placeholder={props.userData.username}
+                    placeholder={props.user.username}
                     onChange={(e) => setNewUsername(e.target.value)}
                   />
                   {usernameErr && (
@@ -118,7 +114,7 @@ export function EditProfileView(props) {
                   <Form.Control
                     value={email}
                     type="text"
-                    placeholder={props.userData.email}
+                    placeholder={props.user.email}
                     onChange={(e) => setNewEmail(e.target.value)}
                   />
                   {emailErr && <p className="alert alert-danger">{emailErr}</p>}
@@ -152,4 +148,12 @@ export function EditProfileView(props) {
 
 EditProfileView.propTypes = {
   onBackClick: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+    password: PropTypes.string,
+    birthday: PropTypes.string,
+    favoriteMovies: PropTypes.array,
+  }).isRequired,
+  movies: PropTypes.array,
 };

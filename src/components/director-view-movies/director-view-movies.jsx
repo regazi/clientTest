@@ -5,12 +5,12 @@ import { MovieCard } from "../movie-card/movie-card";
 
 export class DirMovieCard extends React.Component {
   render() {
-    const { myMovies, userData, directors, history } = this.props;
+    const { myMovies, directors, history, user } = this.props;
     return myMovies.map((movie) => (
       <Col md={4} lg={4} sm={6} xs={8} key={movie._id} className="d-inline">
         <MovieCard
           movie={movie}
-          userData={userData}
+          user={user}
           onBackClick={() => history.goBack()}
           setNewUser={(data) => this.setNewUser(data, myMovies)}
           directors={directors}

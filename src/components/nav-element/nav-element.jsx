@@ -3,11 +3,14 @@ import { Nav, Button, Container, Navbar, NavDropdown } from "react-bootstrap";
 
 import { Link } from "react-router-dom";
 
-export function NavElement({ user, onLoggedOut }) {
+export function NavElement(props) {
+  let userName = "";
+  console.log(props);
+  const { user } = props;
   const handleLogout = () => {
-    onLoggedOut();
+    props.onLoggedOut();
   };
-
+  //console.log(props.user.user.username);
   const isAuth = () => {
     if (typeof window == "undefined") {
       return false;
@@ -18,6 +21,9 @@ export function NavElement({ user, onLoggedOut }) {
       return false;
     }
   };
+  if (user !== null) {
+    userName = user.username;
+  }
 
   return (
     <Navbar bg="light" sticky="top">
@@ -25,20 +31,26 @@ export function NavElement({ user, onLoggedOut }) {
         <Navbar.Brand>
           <Link to="/">FIF</Link>
         </Navbar.Brand>
-        <Nav className="align-self-end d-flex justify-content-around">
+        <Nav variant="pills" className="align-self-end d-flex ">
           <Nav.Item>
-            <Link to="/directors">Directors</Link>
+            <Nav.Link href="/directors" eventKey="link-1">
+              Directors
+            </Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Link to="/genres">Genres</Link>
+            <Nav.Link href="/genres" eventKey="link-2">
+              Genres
+            </Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Link to="/">Movies</Link>
+            <Nav.Link href="/" eventKey="link-3">
+              Movies
+            </Nav.Link>
           </Nav.Item>
-          <NavDropdown title={user} id="basic-nav-dropdown">
+          <NavDropdown title={userName} id="basic-nav-dropdown">
             {isAuth() && (
-              <NavDropdown.Item>
-                <Link to={`/users/${user}`}>Profile</Link>
+              <NavDropdown.Item href={`/users/${userName}`}>
+                Profile
               </NavDropdown.Item>
             )}
             <NavDropdown.Item>

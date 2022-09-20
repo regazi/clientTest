@@ -9,7 +9,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
-//import { propTypes } from "react-bootstrap/esm/Image";
 
 export class MovieView extends React.Component {
   constructor() {
@@ -20,8 +19,7 @@ export class MovieView extends React.Component {
     };
   }
   componentDidMount() {
-    console.log(this.props);
-    if (this.props.userData.favoriteMovies.includes(this.props.movie._id)) {
+    if (this.props.user.favoriteMovies.includes(this.props.movie)) {
       this.setState({
         checked: true,
       });
@@ -30,17 +28,16 @@ export class MovieView extends React.Component {
         checked: false,
       });
   }
+  //checkbox for adding to favorites
   handleClick(movieId, userId, setNewUser, e) {
     const favor = e.currentTarget.checked;
     if (favor === true) {
       this.addToFavorites(movieId, userId, setNewUser);
-      console.log("checked");
       this.setState({
         checked: favor,
       });
     } else {
       this.removeFavorites(movieId, userId, setNewUser);
-      console.log("not checked");
       this.setState({
         checked: favor,
       });
@@ -55,12 +52,10 @@ export class MovieView extends React.Component {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
-        console.log(response);
         setNewUser(response.data);
       })
       .catch(function (error) {
         console.log(error);
-        console.log(token, userId, movieId);
       });
   }
 
@@ -73,7 +68,6 @@ export class MovieView extends React.Component {
     })
       .then((response) => {
         setNewUser(response.data);
-        console.log(response);
       })
       .catch(function (error) {
         console.log(error);
@@ -81,7 +75,7 @@ export class MovieView extends React.Component {
   }
 
   render() {
-    const { movie, onBackClick, userData, directors, genres, setNewUser } =
+    const { movie, onBackClick, user, directors, genres, setNewUser } =
       this.props;
     const { checked } = this.state;
 
@@ -101,6 +95,7 @@ export class MovieView extends React.Component {
               type="toggle"
               className="justify-content-end togglebar"
             >
+              <Card.Title>Favorites</Card.Title>
               <ToggleButton
                 id="toggle-check"
                 type="checkbox"
@@ -108,7 +103,7 @@ export class MovieView extends React.Component {
                 checked={checked}
                 value="1"
                 onChange={(e) =>
-                  this.handleClick(movie._id, userData._id, setNewUser, e)
+                  this.handleClick(movie._id, user._id, setNewUser, e)
                 }
               >
                 Symbol
@@ -203,12 +198,12 @@ MovieView.propTypes = {
     }).isRequired,
   }).isRequired,
   onBackClick: PropTypes.func.isRequired,
-  userData: PropTypes.shape({
+  user: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
     password: PropTypes.string,
-    birthday: PropTypes.string.isRequired,
-    favoriteMovies: PropTypes.array.isRequired,
+    birthday: PropTypes.string,
+    favoriteMovies: PropTypes.array,
   }).isRequired,
   directors: PropTypes.array,
   genres: PropTypes.array,

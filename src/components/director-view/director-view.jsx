@@ -5,10 +5,11 @@ import Accordion from "react-bootstrap/Accordion";
 import { Link } from "react-router-dom";
 import { DirMovieCard } from "../director-view-movies/director-view-movies";
 import "./director-view.scss";
+import PropTypes from "prop-types";
 
 export class DirectorView extends React.Component {
   render() {
-    const { movies, directors, userData } = this.props;
+    const { movies, directors, user } = this.props;
     if (directors)
       return directors.map((director) => (
         <Accordion.Item key={director._id} eventKey={director._id}>
@@ -20,7 +21,7 @@ export class DirectorView extends React.Component {
               <Card className="p-2 flex-row overflow-auto">
                 <DirMovieCard
                   directors={directors}
-                  userData={userData}
+                  user={user}
                   key={director._id}
                   myMovies={movies.filter(
                     (movie) => movie.director === director._id
@@ -39,3 +40,15 @@ export class DirectorView extends React.Component {
     else return <div />;
   }
 }
+
+DirectorView.propTypes = {
+  movies: PropTypes.array.isRequired,
+  user: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+    password: PropTypes.string,
+    birthday: PropTypes.string,
+    favoriteMovies: PropTypes.array.isRequired,
+  }).isRequired,
+  directors: PropTypes.array,
+};
