@@ -2,7 +2,7 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
-import { DirMovieCard } from "../director-view-movies/director-view-movies";
+import DirMovieCard from "../director-view-movies/director-view-movies";
 import PropTypes from "prop-types";
 
 export class SingleDirectorView extends React.Component {

@@ -5,12 +5,17 @@ import { Card, CardGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axios from "axios";
 //import { DirMovieCard } from "../director-view-movies/director-view-movies";
-import { FaveMovie } from "./components/favorite-movies.jsx";
+import FaveMovie from "./components/favorite-movies.jsx";
 //import { EditField } from "./components/edit-field.jsx";
-export class ProfileView extends React.Component {
+import { connect } from "react-redux";
+const mapStateToProps = (state) => {
+  const { user } = state;
+  return { user };
+};
+
+class ProfileView extends React.Component {
   deleteUser(id) {
     const token = localStorage.getItem("token");
-
     axios({
       method: "delete",
       url: `https://fifilm.herokuapp.com/users/${id}`,
@@ -25,6 +30,7 @@ export class ProfileView extends React.Component {
   }
   render() {
     const { user, setNewUser } = this.props;
+    console.log(user);
     return (
       <CardGroup>
         <Card className="p-4">
@@ -41,7 +47,6 @@ export class ProfileView extends React.Component {
                 key={user._id}
                 myMovies={user.favoriteMovies}
                 setNewUser={(data) => setNewUser(data)}
-                user={user}
               />
             </Card>
           </Card.Body>
@@ -61,12 +66,14 @@ export class ProfileView extends React.Component {
     );
   }
 }
+export default connect(mapStateToProps)(ProfileView);
+
 ProfileView.propTypes = {
   user: PropTypes.shape({
     _id: PropTypes.string,
     username: PropTypes.string,
     birthday: PropTypes.string,
     favoriteMovies: PropTypes.array,
-  }),
+  }).isRequired,
   setNewUser: PropTypes.func,
 };

@@ -9,8 +9,13 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
+import { connect } from "react-redux";
+const mapStateToProps = (state) => {
+  const { user, directors, genres } = state;
+  return { user, directors, genres };
+};
 
-export class MovieView extends React.Component {
+class MovieView extends React.Component {
   constructor() {
     super();
     //initialize state
@@ -188,7 +193,7 @@ export class MovieView extends React.Component {
     );
   }
 }
-
+export default connect(mapStateToProps)(MovieView);
 MovieView.propTypes = {
   movie: PropTypes.shape({
     title: PropTypes.string.isRequired,

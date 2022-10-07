@@ -6,8 +6,13 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import { Card, CardGroup, Container } from "react-bootstrap";
 import axios from "axios";
+import { connect } from "react-redux";
+const mapStateToProps = (state) => {
+  const { user } = state;
+  return { user };
+};
 
-export function EditProfileView(props) {
+function EditProfileView(props) {
   const [username, setNewUsername] = useState("");
   const [password, setNewPassword] = useState("");
   const [email, setNewEmail] = useState("");
@@ -145,7 +150,7 @@ export function EditProfileView(props) {
     </Container>
   );
 }
-
+export default connect(mapStateToProps)(EditProfileView);
 EditProfileView.propTypes = {
   onBackClick: PropTypes.func.isRequired,
   user: PropTypes.shape({

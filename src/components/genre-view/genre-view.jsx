@@ -1,10 +1,15 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
 import Accordion from "react-bootstrap/Accordion";
-import { DirMovieCard } from "../director-view-movies/director-view-movies";
+import DirMovieCard from "../director-view-movies/director-view-movies";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
+const mapStateToProps = (state) => {
+  const { user, movies, genres } = state;
+  return { user, movies, genres };
+};
 
-export class GenreView extends React.Component {
+class GenreView extends React.Component {
   render() {
     const { movies, user, genres } = this.props;
     return genres.map((genre) => (
@@ -28,6 +33,7 @@ export class GenreView extends React.Component {
     ));
   }
 }
+export default connect(mapStateToProps)(GenreView);
 
 GenreView.propTypes = {
   user: PropTypes.shape({

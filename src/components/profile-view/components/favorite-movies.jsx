@@ -1,11 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Col from "react-bootstrap/Col";
-import { MovieCard } from "../../movie-card/movie-card";
+import MovieCard from "../../movie-card/movie-card";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
+import { connect } from "react-redux";
+const mapStateToProps = (state) => {
+  const { user } = state;
+  return { user };
+};
 
-export class FaveMovie extends React.Component {
+class FaveMovie extends React.Component {
   removeFavorites(movieId, userId, setNewUser) {
     console.log(movieId);
     console.log(userId);
@@ -36,7 +41,7 @@ export class FaveMovie extends React.Component {
           >
             X
           </Button>
-          <MovieCard movie={movie} user={user} />
+          <MovieCard movie={movie} />
         </Col>
       ));
     } else {
@@ -48,6 +53,7 @@ export class FaveMovie extends React.Component {
     }
   }
 }
+export default connect(mapStateToProps)(FaveMovie);
 
 FaveMovie.propTypes = {
   myMovies: PropTypes.array,

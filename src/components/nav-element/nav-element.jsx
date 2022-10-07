@@ -1,9 +1,14 @@
 import React from "react";
 import { Nav, Button, Container, Navbar, NavDropdown } from "react-bootstrap";
+import { connect } from "react-redux";
 
 import { Link } from "react-router-dom";
+const mapStateToProps = (state) => {
+  const { user } = state;
+  return { user };
+};
 
-export function NavElement(props) {
+function NavElement(props) {
   let userName = "";
   console.log(props);
   const { user } = props;
@@ -71,3 +76,4 @@ export function NavElement(props) {
     </Navbar>
   );
 }
+export default connect(mapStateToProps)(NavElement);

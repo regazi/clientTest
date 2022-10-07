@@ -16,7 +16,7 @@ export function RegistrationView(props) {
   const [birthday, setBirthday] = useState("");
   //invalid states
   const [usernameErr, setUsernameErr] = useState("");
-  const [passwordErr, setPasswordErr] = useState("");
+
   const [emailErr, setEmailErr] = useState("");
   const validate = () => {
     let isReq = true;
@@ -55,10 +55,12 @@ export function RegistrationView(props) {
         .then((response) => {
           const data = response.data;
           console.log(data);
+          console.log("then");
           onReg();
         })
         .catch((e) => {
           console.log(e);
+          console.log("catch");
         });
     }
   };
@@ -123,9 +125,6 @@ export function RegistrationView(props) {
                     type="text"
                     onChange={(e) => setPassword(e.target.value)}
                   />
-                  {passwordErr && (
-                    <p className="alert alert-danger">{passwordErr}</p>
-                  )}
                 </Form.Group>
 
                 <nav className="navbar">

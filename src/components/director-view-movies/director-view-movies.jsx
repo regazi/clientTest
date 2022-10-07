@@ -1,24 +1,28 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Col from "react-bootstrap/Col";
-import { MovieCard } from "../movie-card/movie-card";
+import MovieCard from "../movie-card/movie-card";
+import { connect } from "react-redux";
+const mapStateToProps = (state) => {
+  const { user, directors } = state;
+  return { user, directors };
+};
 
-export class DirMovieCard extends React.Component {
+class DirMovieCard extends React.Component {
   render() {
-    const { myMovies, directors, history, user } = this.props;
+    const { myMovies, history } = this.props;
     return myMovies.map((movie) => (
       <Col md={4} lg={4} sm={6} xs={8} key={movie._id} className="d-inline">
         <MovieCard
           movie={movie}
-          user={user}
           onBackClick={() => history.goBack()}
           setNewUser={(data) => this.setNewUser(data, myMovies)}
-          directors={directors}
         />
       </Col>
     ));
   }
 }
+export default connect(mapStateToProps)(DirMovieCard);
 
 DirMovieCard.propTypes = {
   movie: PropTypes.shape({

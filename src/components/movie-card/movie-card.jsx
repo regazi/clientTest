@@ -4,8 +4,13 @@ import "./movie-card.scss";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+const mapStateToProps = (state) => {
+  const { user, directors } = state;
+  return { user, directors };
+};
 
-export class MovieCard extends React.Component {
+class MovieCard extends React.Component {
   render() {
     const { movie, user } = this.props;
     if (user.favoriteMovies && user.favoriteMovies.includes(movie)) {
@@ -49,6 +54,7 @@ export class MovieCard extends React.Component {
     }
   }
 }
+export default connect(mapStateToProps)(MovieCard);
 MovieCard.propTypes = {
   movie: PropTypes.shape({
     title: PropTypes.string.isRequired,

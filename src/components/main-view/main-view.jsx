@@ -1,15 +1,15 @@
 import React from "react";
 import axios from "axios";
 //import { MovieCard } from "../movie-card/movie-card";
-import { MovieView } from "../movie-view/movie-view";
+import MovieView from "../movie-view/movie-view";
 import { LoginView } from "../login-view/login-view";
-import { NavElement } from "../nav-element/nav-element";
+import NavElement from "../nav-element/nav-element";
 import { RegistrationView } from "../registration-view/registration-view";
-import { ProfileView } from "../profile-view/profile-view";
-import { DirectorView } from "../director-view/director-view";
+import ProfileView from "../profile-view/profile-view";
+import DirectorView from "../director-view/director-view";
 import { SingleDirectorView } from "../director-view/single-director";
-import { EditProfileView } from "../edit-profile-view/edit-profile-view";
-import { GenreView } from "../genre-view/genre-view";
+import EditProfileView from "../edit-profile-view/edit-profile-view";
+import GenreView from "../genre-view/genre-view";
 import "./main-view.scss";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -17,7 +17,7 @@ import Accordion from "react-bootstrap/Accordion";
 import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-
+import MoviesList from "../movies-list/movies-list";
 //redux
 import { connect } from "react-redux";
 import {
@@ -26,7 +26,7 @@ import {
   setDirectors,
   setUser,
 } from "../../actions/actions";
-import MoviesList from "../movies-list/movies-list";
+
 //end redux
 class MainView extends React.Component {
   constructor() {
@@ -151,10 +151,10 @@ class MainView extends React.Component {
   }
 
   render() {
-    const { movies, directors, genres, user } = this.props;
+    const { movies, directors, user } = this.props;
     return (
       <Router>
-        <NavElement user={user} onLoggedOut={() => this.onLoggedOut()} />
+        <NavElement onLoggedOut={() => this.onLoggedOut()} />
         <Row className="main-view justify-content-md-center">
           <Route
             exact
@@ -167,7 +167,7 @@ class MainView extends React.Component {
                   </Col>
                 );
               if (movies.length === 0) return <div className="main-view" />;
-              return <MoviesList movies={movies} user={user} />;
+              return <MoviesList />;
             }}
           />
           <Route
@@ -177,7 +177,6 @@ class MainView extends React.Component {
               return (
                 <Col md={8}>
                   <RegistrationView
-                    user={user}
                     onBackClick={() => history.goBack()}
                     onLoggedIn={(user) => this.onLoggedIn(user)}
                   />
@@ -191,24 +190,18 @@ class MainView extends React.Component {
               if (!user)
                 return (
                   <Col>
-                    <LoginView
-                      movies={movies}
-                      onLoggedIn={(user) => this.onLoggedIn(user)}
-                    />
+                    <LoginView onLoggedIn={(user) => this.onLoggedIn(user)} />
                   </Col>
                 );
               if (movies.length === 0) return <div className="main-view" />;
               return (
                 <Col md={8}>
                   <MovieView
-                    user={user}
                     movie={movies.find(
                       (movie) => movie._id === match.params.movieId
                     )}
                     onBackClick={() => history.goBack()}
                     setNewUser={(data) => this.setNewUser(data, movies)}
-                    directors={directors}
-                    genres={genres}
                   />
                 </Col>
               );
@@ -233,13 +226,7 @@ class MainView extends React.Component {
                 <Col md={8} lg={12}>
                   <Card>
                     <Accordion>
-                      <GenreView
-                        movies={movies}
-                        onBackClick={() => history.goBack()}
-                        user={user}
-                        genres={genres}
-                        director={directors}
-                      />
+                      <GenreView onBackClick={() => history.goBack()} />
                     </Accordion>
                     <Button
                       varient="primary"
@@ -273,8 +260,6 @@ class MainView extends React.Component {
                     director={directors.find(
                       (d) => d.name === match.params.name
                     )}
-                    movies={movies}
-                    user={user}
                     onBackClick={() => history.goBack()}
                   />
                 </Col>
@@ -327,9 +312,7 @@ class MainView extends React.Component {
               return (
                 <Col md={8}>
                   <ProfileView
-                    user={user}
                     setNewUser={(data) => this.setNewUser(data, movies)}
-                    movies={movies}
                     onBackClick={() => history.goBack()}
                     onLoggedOut={() => this.onLoggedOut}
                   />
@@ -345,9 +328,7 @@ class MainView extends React.Component {
               return (
                 <Col md={10} lg={12}>
                   <EditProfileView
-                    user={user}
                     onBackClick={() => history.goBack()}
-                    movies={movies}
                     setNewUser={(data) => this.setNewUser(data, movies)}
                   />
                 </Col>
